@@ -13,7 +13,7 @@
           <span class="text-sm font-medium text-slate-700">Amount</span>
           <input
             ref="amountEl"
-            v-model="amount"
+            v-model.number="amount"
             type="number"
             step="0.01"
             min="0"
@@ -86,7 +86,7 @@ const toLocalIsoDate = (date) => {
   return `${y}-${m}-${d}`
 }
 
-const amount = ref('')
+const amount = ref(null)
 const category = ref(CATEGORIES[0])
 const date = ref(toLocalIsoDate(new Date()))
 const note = ref('')
@@ -100,8 +100,13 @@ const errors = reactive({
 
 const categories = computed(() => CATEGORIES)
 const canSubmit = computed(() => {
-  const n = Number(amount.value)
-  return Number.isFinite(n) && n > 0 && !!category.value && !!date.value
+  return (
+    typeof amount.value === 'number' &&
+    Number.isFinite(amount.value) &&
+    amount.value > 0 &&
+    !!category.value &&
+    !!date.value
+  )
 })
 
 function clearErrors() {
@@ -130,7 +135,7 @@ function onSubmit() {
   }
 
   // Quick-add friendly: keep category/date, reset amount/note.
-  amount.value = ''
+  amount.value = null
   note.value = ''
   nextTick(() => amountEl.value?.focus())
 }
