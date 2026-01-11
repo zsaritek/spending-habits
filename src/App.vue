@@ -37,14 +37,16 @@ const filteredExpenses = computed(() => {
 })
 
 const listEmptyTitle = computed(() => {
-  if (!filtersActive.value) return 'No expenses yet.'
-  return 'No matches.'
+  if (expenses.value.length === 0) return 'No expenses yet.'
+  if (filtersActive.value) return 'No expenses match your filters.'
+  return 'No expenses yet.'
 })
 
 const listEmptyBody = computed(() => {
-  if (!filtersActive.value) return 'Add your first one above — it’ll show up here.'
+  if (expenses.value.length === 0) return 'Add your first one above — it’ll show up here.'
   if (dateRangeError.value) return 'Fix the date range above.'
-  return 'Try loosening the filters or clear them to see everything.'
+  if (filtersActive.value) return 'Try loosening the filters or hit Clear.'
+  return 'Add your next one above.'
 })
 
 function clearFilters() {
@@ -55,11 +57,13 @@ function clearFilters() {
 </script>
 
 <template>
-  <div class="min-h-dvh bg-slate-50 text-slate-900">
-    <header class="border-b border-slate-200 bg-white">
+  <div class="min-h-dvh bg-linear-to-b from-slate-50 to-slate-100/40 text-slate-900">
+    <header class="border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
         <div class="min-w-0">
-          <h1 class="text-lg font-semibold tracking-tight sm:text-xl">Spending Habits</h1>
+          <h1 class="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+            Spending Habits
+          </h1>
           <p class="mt-0.5 text-sm text-slate-600">Tiny expense tracker. No accounts, no fuss.</p>
         </div>
         <div class="hidden text-sm text-slate-500 sm:block">Local-first • Stored in your browser</div>
@@ -75,6 +79,7 @@ function clearFilters() {
           v-model:toDate="toDate"
           :categories="categories"
           :error="dateRangeError"
+          :can-clear="filtersActive"
           @clear="clearFilters"
         />
         <ExpenseForm />

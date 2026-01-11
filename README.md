@@ -22,12 +22,12 @@ Your data is stored in **localStorage** (in your browser). No accounts. No backe
 ```bash
 npm install
 npm run dev
+npm run build
 ```
 
-Build for production:
+If you want to sanity-check the production build locally:
 
 ```bash
-npm run build
 npm run preview
 ```
 

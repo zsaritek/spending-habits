@@ -1,6 +1,11 @@
 <template>
-  <section class="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-    <h2 class="text-base font-semibold">Add expense</h2>
+  <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <div>
+        <h2 class="text-base font-semibold text-slate-900">Add expense</h2>
+        <p class="mt-1 text-sm text-slate-600">Quick add: amount + Enter.</p>
+      </div>
+    </div>
 
     <form class="mt-4 grid gap-4" @submit.prevent="onSubmit">
       <div class="grid gap-3 sm:grid-cols-12 sm:items-start">
@@ -14,7 +19,7 @@
             min="0"
             inputmode="decimal"
             placeholder="0.00"
-            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
             :class="errors.amount ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           />
           <span v-if="errors.amount" class="text-xs text-red-600">{{ errors.amount }}</span>
@@ -24,7 +29,7 @@
           <span class="text-sm font-medium text-slate-700">Category</span>
           <select
             v-model="category"
-            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
             :class="errors.category ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           >
             <option value="" disabled>Select…</option>
@@ -38,7 +43,7 @@
           <input
             v-model="date"
             type="date"
-            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+            class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
             :class="errors.date ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           />
           <span v-if="errors.date" class="text-xs text-red-600">{{ errors.date }}</span>
@@ -50,17 +55,16 @@
         <input
           v-model="note"
           placeholder="Coffee with Alex"
-          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
         />
       </label>
 
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <p class="text-xs text-slate-500">
-          Tip: amount + category + Enter is the fastest flow. Date defaults to today.
-        </p>
+        <p class="text-xs text-slate-500">Date defaults to today.</p>
         <button
           type="submit"
-          class="inline-flex h-10 items-center justify-center rounded-lg bg-slate-900 px-4 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          :disabled="!canSubmit"
+          class="inline-flex h-10 items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:bg-indigo-300"
         >
           Add expense
         </button>
@@ -95,6 +99,10 @@ const errors = reactive({
 })
 
 const categories = computed(() => DEFAULT_CATEGORIES)
+const canSubmit = computed(() => {
+  const n = Number(amount.value)
+  return Number.isFinite(n) && n > 0 && !!category.value && !!date.value
+})
 
 function clearErrors() {
   errors.amount = ''
@@ -104,6 +112,8 @@ function clearErrors() {
 
 function onSubmit() {
   clearErrors()
+
+  if (!canSubmit.value) return
 
   const result = addExpense({
     amount: amount.value,

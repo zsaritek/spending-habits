@@ -1,5 +1,5 @@
 <template>
-  <section class="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+  <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
     <div class="flex flex-wrap items-baseline justify-between gap-3">
       <div>
         <h2 class="text-base font-semibold">Filters</h2>
@@ -8,7 +8,8 @@
 
       <button
         type="button"
-        class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+        :disabled="!canClear"
+        class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         @click="$emit('clear')"
       >
         Clear
@@ -20,7 +21,7 @@
         <span class="text-sm font-medium text-slate-700">Category</span>
         <select
           :value="category"
-          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           @change="$emit('update:category', $event.target.value)"
         >
           <option value="">All categories</option>
@@ -33,7 +34,7 @@
         <input
           :value="fromDate"
           type="date"
-          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           :class="error ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           @input="$emit('update:fromDate', $event.target.value)"
         />
@@ -44,7 +45,7 @@
         <input
           :value="toDate"
           type="date"
-          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+          class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           :class="error ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           @input="$emit('update:toDate', $event.target.value)"
         />
@@ -52,7 +53,7 @@
     </div>
 
     <p v-if="error" class="mt-2 text-sm text-red-600">{{ error }}</p>
-    <p v-else class="mt-2 text-xs text-slate-500">Tip: filters affect the list. Summaries above stay global.</p>
+    <p v-else class="mt-2 text-xs text-slate-500">Filters affect the list. Summary stays global.</p>
   </section>
 </template>
 
@@ -63,6 +64,7 @@ defineProps({
   toDate: { type: String, default: '' },
   categories: { type: Array, default: () => [] },
   error: { type: String, default: '' },
+  canClear: { type: Boolean, default: false },
 })
 
 defineEmits(['update:category', 'update:fromDate', 'update:toDate', 'clear'])
