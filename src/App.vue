@@ -4,18 +4,16 @@ import ExpenseForm from './components/ExpenseForm.vue'
 import ExpenseList from './components/ExpenseList.vue'
 import FilterBar from './components/FilterBar.vue'
 import SummaryCards from './components/SummaryCards.vue'
-import { DEFAULT_CATEGORIES, useExpenses } from './composables/useExpenses'
+import { useExpenses } from './composables/useExpenses'
+import { CATEGORIES } from './constants/categories'
 
-const { expenses, categoriesInUse } = useExpenses()
+const { expenses } = useExpenses()
 
 const selectedCategory = ref('')
 const fromDate = ref('')
 const toDate = ref('')
 
-const categories = computed(() => {
-  const set = new Set([...DEFAULT_CATEGORIES, ...categoriesInUse.value])
-  return [...set].sort((a, b) => a.localeCompare(b))
-})
+const categories = computed(() => CATEGORIES)
 
 const dateRangeError = computed(() => {
   if (!fromDate.value || !toDate.value) return ''

@@ -1,17 +1,8 @@
 import { computed, ref, watch } from 'vue'
+import { CATEGORIES } from '../constants/categories'
 
 const STORAGE_KEY = 'spending-habits:expenses:v1'
-
-export const DEFAULT_CATEGORIES = [
-    'Food',
-    'Groceries',
-    'Transport',
-    'Bills',
-    'Shopping',
-    'Health',
-    'Fun',
-    'Other',
-]
+export { CATEGORIES }
 
 function safeParse(json) {
     try {
@@ -137,13 +128,16 @@ export function useExpenses() {
             }
 
             expenses.value = [expense, ...expenses.value]
+            save()
             return { ok: true, expense }
         }
 
         function deleteExpense(id) {
             const before = expenses.value.length
             expenses.value = expenses.value.filter((e) => e.id !== id)
-            return { ok: expenses.value.length !== before }
+            const ok = expenses.value.length !== before
+            if (ok) save()
+            return { ok }
         }
 
         function updateExpense(id, patch) {
@@ -164,6 +158,7 @@ export function useExpenses() {
 
             // Keep most recent first after edits
             expenses.value = [...expenses.value].sort(sortMostRecentFirst)
+            save()
             return { ok: true }
         }
 

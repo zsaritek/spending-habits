@@ -32,7 +32,6 @@
             class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
             :class="errors.category ? 'border-red-400 focus:border-red-600 focus:ring-red-100' : ''"
           >
-            <option value="" disabled>Select…</option>
             <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
           </select>
           <span v-if="errors.category" class="text-xs text-red-600">{{ errors.category }}</span>
@@ -75,7 +74,8 @@
 
 <script setup>
 import { computed, nextTick, reactive, ref } from 'vue'
-import { DEFAULT_CATEGORIES, useExpenses } from '../composables/useExpenses'
+import { useExpenses } from '../composables/useExpenses'
+import { CATEGORIES } from '../constants/categories'
 
 const { addExpense } = useExpenses()
 
@@ -87,7 +87,7 @@ const toLocalIsoDate = (date) => {
 }
 
 const amount = ref('')
-const category = ref(DEFAULT_CATEGORIES[0])
+const category = ref(CATEGORIES[0])
 const date = ref(toLocalIsoDate(new Date()))
 const note = ref('')
 const amountEl = ref(null)
@@ -98,7 +98,7 @@ const errors = reactive({
   date: '',
 })
 
-const categories = computed(() => DEFAULT_CATEGORIES)
+const categories = computed(() => CATEGORIES)
 const canSubmit = computed(() => {
   const n = Number(amount.value)
   return Number.isFinite(n) && n > 0 && !!category.value && !!date.value
