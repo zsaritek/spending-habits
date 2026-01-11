@@ -3,18 +3,18 @@
     <div class="flex flex-wrap items-baseline justify-between gap-3">
       <h2 class="text-base font-semibold">Expenses</h2>
       <div class="text-sm text-slate-600">
-        <span class="font-medium text-slate-900">{{ expenses.length }}</span>
-        <span>{{ expenses.length === 1 ? 'item' : 'items' }}</span>
+        <span class="font-medium text-slate-900">{{ items.length }}</span>
+        <span>{{ items.length === 1 ? 'item' : 'items' }}</span>
       </div>
     </div>
 
-    <div v-if="expenses.length === 0" class="mt-4 rounded-lg border border-dashed border-slate-200 p-4">
+    <div v-if="items.length === 0" class="mt-4 rounded-lg border border-dashed border-slate-200 p-4">
       <p class="text-sm font-medium text-slate-800">No expenses yet.</p>
       <p class="mt-1 text-sm text-slate-600">Add your first one above — it’ll show up here.</p>
     </div>
 
     <ul v-else class="mt-4 divide-y divide-slate-200">
-      <li v-for="e in expenses" :key="e.id" class="py-3">
+      <li v-for="e in items" :key="e.id" class="py-3">
         <div class="flex items-start justify-between gap-4">
           <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -43,7 +43,11 @@
 <script setup>
 import { useExpenses } from '../composables/useExpenses'
 
-const { expenses, deleteExpense } = useExpenses()
+defineProps({
+  items: { type: Array, required: true },
+})
+
+const { deleteExpense } = useExpenses()
 
 function formatMoney(amount) {
   return new Intl.NumberFormat(undefined, {

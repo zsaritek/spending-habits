@@ -1,8 +1,44 @@
 <script setup>
+import { computed, ref } from 'vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import ExpenseList from './components/ExpenseList.vue'
 import FilterBar from './components/FilterBar.vue'
 import SummaryCards from './components/SummaryCards.vue'
+import { DEFAULT_CATEGORIES, useExpenses } from './composables/useExpenses'
+
+const { expenses, categoriesInUse } = useExpenses()
+
+const selectedCategory = ref('')
+const fromDate = ref('')
+const toDate = ref('')
+
+const categories = computed(() => {
+  const set = new Set([...DEFAULT_CATEGORIES, ...categoriesInUse.value])
+  return [...set].sort((a, b) => a.localeCompare(b))
+})
+
+const dateRangeError = computed(() => {
+  if (!fromDate.value || !toDate.value) return ''
+  if (fromDate.value > toDate.value) return '"From" date must be before "To" date.'
+  return ''
+})
+
+const filteredExpenses = computed(() => {
+  if (dateRangeError.value) return []
+
+  return expenses.value.filter((e) => {
+    if (selectedCategory.value && e.category !== selectedCategory.value) return false
+    if (fromDate.value && e.date < fromDate.value) return false
+    if (toDate.value && e.date > toDate.value) return false
+    return true
+  })
+})
+
+function clearFilters() {
+  selectedCategory.value = ''
+  fromDate.value = ''
+  toDate.value = ''
+}
 </script>
 
 <template>
@@ -20,9 +56,16 @@ import SummaryCards from './components/SummaryCards.vue'
     <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6">
       <div class="space-y-6">
         <SummaryCards />
-        <FilterBar />
+        <FilterBar
+          v-model:category="selectedCategory"
+          v-model:fromDate="fromDate"
+          v-model:toDate="toDate"
+          :categories="categories"
+          :error="dateRangeError"
+          @clear="clearFilters"
+        />
         <ExpenseForm />
-        <ExpenseList />
+        <ExpenseList :items="filteredExpenses" />
       </div>
     </main>
 
