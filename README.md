@@ -4,6 +4,8 @@ A small, local-first expense tracker. It’s meant to be quick to use, not a ful
 
 Your data is stored in **localStorage** (in your browser). No accounts. No backend.
 
+![App screenshot](docs/screenshots/spending-habits.png)
+
 ## Features
 
 - Add an expense: amount, category, date, note (optional)
