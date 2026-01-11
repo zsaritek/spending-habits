@@ -23,6 +23,8 @@ const dateRangeError = computed(() => {
   return ''
 })
 
+const filtersActive = computed(() => !!selectedCategory.value || !!fromDate.value || !!toDate.value)
+
 const filteredExpenses = computed(() => {
   if (dateRangeError.value) return []
 
@@ -32,6 +34,17 @@ const filteredExpenses = computed(() => {
     if (toDate.value && e.date > toDate.value) return false
     return true
   })
+})
+
+const listEmptyTitle = computed(() => {
+  if (!filtersActive.value) return 'No expenses yet.'
+  return 'No matches.'
+})
+
+const listEmptyBody = computed(() => {
+  if (!filtersActive.value) return 'Add your first one above — it’ll show up here.'
+  if (dateRangeError.value) return 'Fix the date range above.'
+  return 'Try loosening the filters or clear them to see everything.'
 })
 
 function clearFilters() {
@@ -65,7 +78,7 @@ function clearFilters() {
           @clear="clearFilters"
         />
         <ExpenseForm />
-        <ExpenseList :items="filteredExpenses" />
+        <ExpenseList :items="filteredExpenses" :empty-title="listEmptyTitle" :empty-body="listEmptyBody" />
       </div>
     </main>
 

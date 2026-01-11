@@ -87,6 +87,12 @@ function normalizeStoredExpense(raw) {
     }
 }
 
+function sortMostRecentFirst(a, b) {
+    // date is YYYY-MM-DD so string compare is chronological
+    if (a.date !== b.date) return b.date.localeCompare(a.date)
+    return (b.createdAt ?? 0) - (a.createdAt ?? 0)
+}
+
 export function useExpenses() {
     // Singleton state: every component gets the same source of truth.
     // (KISS: module-level refs + one-time init)
@@ -108,9 +114,7 @@ export function useExpenses() {
 
             const normalized = parsed.value.map(normalizeStoredExpense).filter(Boolean)
             // Most recent first (by date, then createdAt)
-            normalized.sort((a, b) =>
-                (b.date + String(b.createdAt)).localeCompare(a.date + String(a.createdAt)),
-            )
+            normalized.sort(sortMostRecentFirst)
             expenses.value = normalized
         }
 
@@ -159,9 +163,7 @@ export function useExpenses() {
             }
 
             // Keep most recent first after edits
-            expenses.value = [...expenses.value].sort((a, b) =>
-                (b.date + String(b.createdAt)).localeCompare(a.date + String(a.createdAt)),
-            )
+            expenses.value = [...expenses.value].sort(sortMostRecentFirst)
             return { ok: true }
         }
 

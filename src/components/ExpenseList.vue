@@ -9,8 +9,8 @@
     </div>
 
     <div v-if="items.length === 0" class="mt-4 rounded-lg border border-dashed border-slate-200 p-4">
-      <p class="text-sm font-medium text-slate-800">No expenses yet.</p>
-      <p class="mt-1 text-sm text-slate-600">Add your first one above — it’ll show up here.</p>
+      <p class="text-sm font-medium text-slate-800">{{ emptyTitle }}</p>
+      <p class="mt-1 text-sm text-slate-600">{{ emptyBody }}</p>
     </div>
 
     <ul v-else class="mt-4 divide-y divide-slate-200">
@@ -45,6 +45,8 @@ import { useExpenses } from '../composables/useExpenses'
 
 defineProps({
   items: { type: Array, required: true },
+  emptyTitle: { type: String, default: 'No expenses yet.' },
+  emptyBody: { type: String, default: 'Add your first one above — it’ll show up here.' },
 })
 
 const { deleteExpense } = useExpenses()

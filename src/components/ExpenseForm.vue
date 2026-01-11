@@ -7,7 +7,11 @@
         <label class="grid gap-1 sm:col-span-4">
           <span class="text-sm font-medium text-slate-700">Amount</span>
           <input
+            ref="amountEl"
             v-model="amount"
+            type="number"
+            step="0.01"
+            min="0"
             inputmode="decimal"
             placeholder="0.00"
             class="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
@@ -66,17 +70,23 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { DEFAULT_CATEGORIES, useExpenses } from '../composables/useExpenses'
 
 const { addExpense } = useExpenses()
 
-const todayIso = () => new Date().toISOString().slice(0, 10)
+const toLocalIsoDate = (date) => {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
 
 const amount = ref('')
 const category = ref(DEFAULT_CATEGORIES[0])
-const date = ref(todayIso())
+const date = ref(toLocalIsoDate(new Date()))
 const note = ref('')
+const amountEl = ref(null)
 
 const errors = reactive({
   amount: '',
@@ -112,6 +122,7 @@ function onSubmit() {
   // Quick-add friendly: keep category/date, reset amount/note.
   amount.value = ''
   note.value = ''
+  nextTick(() => amountEl.value?.focus())
 }
 </script>
 
