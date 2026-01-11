@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Small, intentional globals only (Tailwind handles the rest). */
+html,
+body {
+  height: 100%;
+}
